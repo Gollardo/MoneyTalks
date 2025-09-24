@@ -1,0 +1,116 @@
+<nav
+  [class.hidden]="!isAuth()"
+  class="bg-gray-800 border-b border-gray-700 px-4 py-2.5 fixed left-0 right-0 top-0 z-50 shadow-lg"
+>
+  <div class="flex justify-between items-center">
+    <!-- Левая часть -->
+    <div class="flex items-center">
+      <!-- Кнопка бургера -->
+      <button
+        data-drawer-target="drawer-navigation"
+        data-drawer-toggle="drawer-navigation"
+        aria-controls="drawer-navigation"
+        class="p-2 mr-3 text-gray-400 rounded-lg cursor-pointer md:hidden hover:bg-gray-700 hover:text-yellow-400 transition-colors"
+      >
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+          <path
+            fill-rule="evenodd"
+            d="M3 5h14M3 10h14M3 15h14"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </button>
+
+      <!-- Лого -->
+      <a href="#" class="flex items-center">
+        <span class="text-2xl font-semibold text-yellow-400 tracking-wide"
+          >Смарт-Учет</span
+        >
+      </a>
+    </div>
+
+    <!-- Правая часть -->
+    <div class="flex items-center">
+      <button
+        id="user-menu-button"
+        data-dropdown-toggle="dropdown-user-menu"
+        class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 hover:text-yellow-400 transition-colors"
+      >
+        {{ user!.login }}
+      </button>
+
+      <!-- Меню пользователя -->
+      <div
+        id="dropdown-user-menu"
+        class="hidden z-50 mt-2 w-56 rounded-xl shadow-lg bg-gray-800 divide-y divide-gray-700"
+      >
+        <div class="py-3 px-4">
+          <span class="block text-sm font-semibold text-gray-200"
+            >{{ user!.login }}</span
+          >
+        </div>
+        <ul class="py-1">
+          <li>
+            <a
+              (click)="userCardModal.show()"
+              class="block py-2 px-4 text-sm text-gray-300 hover:bg-gray-700 hover:text-yellow-400 transition-colors"
+              >Мой профиль</a
+            >
+          </li>
+          <li>
+            <a
+              (click)="logout()"
+              class="block py-2 px-4 text-sm text-red-400 hover:bg-red-500 hover:text-white transition-colors"
+              >Выход</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Боковое меню -->
+<aside
+  [class.hidden]="!isAuth()"
+  id="drawer-navigation"
+  class="fixed top-0 left-0 z-40 w-64 h-screen pt-14 -translate-x-full md:translate-x-0 transition-transform bg-gray-800 border-r border-gray-700"
+>
+  <div class="overflow-y-auto py-6 px-3 space-y-8">
+    @for (section of menuSections; track section.title) {
+    <div>
+      <h2 class="text-xs uppercase tracking-wide text-gray-500 mb-2">
+        {{ section.title }}
+      </h2>
+      <ul class="space-y-1">
+        @for (item of section.items; track item.label) {
+        <li>
+          <a
+            [routerLink]="item.route"
+            class="flex items-center p-2 text-sm font-medium rounded-lg text-gray-300 hover:bg-gray-700 hover:text-yellow-400 transition-all"
+          >
+            <svg
+              class="w-5 h-5 text-gray-500 group-hover:text-yellow-400 transition-colors"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              [innerHTML]="item.safeIconSvgPath"
+            ></svg>
+            <span class="ml-3">{{ item.label }}</span>
+          </a>
+        </li>
+        }
+      </ul>
+    </div>
+    }
+  </div>
+</aside>
+
+<main class="p-4 md:ml-64 h-auto pt-20">
+  <app-loader></app-loader>
+  <router-outlet />
+</main>
+
+<app-user-card
+  [modalId]="'userCardModal'"
+  (closeEvent)="userCardModal.hide()"
+></app-user-card>
